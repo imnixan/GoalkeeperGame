@@ -6,10 +6,13 @@ public class StepsListener : MonoBehaviour
     [SerializeReference]
     GameObject nextButton,
         TipText;
+
     private IKickHappenListener[] kickListeners;
     private IGoalListener[] goalListeners;
     private IPreparingListener[] prepareListeners;
     private IGoalKeeperReadyListener[] goalKeeperReadyListeners;
+    private ICatchListener[] catchListeners;
+
     private GameStepsMachine gameStepsMachine;
 
     public void ClickNext()
@@ -26,10 +29,13 @@ public class StepsListener : MonoBehaviour
     {
         gameStepsMachine = GetComponent<GameStepsMachine>();
         gameStepsMachine.CurrentStep = GameStepsMachine.GameSteps.Preparing;
+
         kickListeners = transform.GetComponentsInChildren<IKickHappenListener>();
         goalListeners = transform.GetComponentsInChildren<IGoalListener>();
         prepareListeners = transform.GetComponentsInChildren<IPreparingListener>();
         goalKeeperReadyListeners = transform.GetComponentsInChildren<IGoalKeeperReadyListener>();
+        catchListeners = transform.GetComponentsInChildren<ICatchListener>();
+
         ClickNext();
     }
 
@@ -71,6 +77,12 @@ public class StepsListener : MonoBehaviour
     {
         nextButton.SetActive(true);
         gameStepsMachine.CurrentStep = GameStepsMachine.GameSteps.Preparing;
+
+        Debug.Log("Catch listeners count " + catchListeners.Length);
+        foreach (var listener in catchListeners)
+        {
+            listener.OnCatchHappen();
+        }
     }
 
     private void OnGoalKeeperReady()

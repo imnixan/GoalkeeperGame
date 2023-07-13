@@ -43,7 +43,7 @@ public class SplineCreator : MonoBehaviour
             RotationPoint,
             new Vector3(
                 GetRotationX(kickXCoord, goalXCoord, rotation),
-                spline.GetPointPosition(1).y,
+                spline.GetPointPosition(RotationPoint).y + Random.Range(-0.5f, 1f),
                 zCoord
             )
         );

@@ -25,6 +25,7 @@ public class Kicker : MonoBehaviour, IPreparingListener, IGoalKeeperReadyListene
     private float kickRotation = 0;
     private float screenHalfWidth;
     private Image image;
+    private float ballRotationSpeed;
 
     private void Init()
     {
@@ -41,11 +42,13 @@ public class Kicker : MonoBehaviour, IPreparingListener, IGoalKeeperReadyListene
         {
             side = Vector2.left / 2;
             kickSprite = kickLeftLeg;
+            ballRotationSpeed = -kickForce;
         }
         else
         {
             side = Vector2.right / 2;
             kickSprite = kickRightLeg;
+            ballRotationSpeed = kickForce;
         }
         return side;
     }
@@ -81,7 +84,7 @@ public class Kicker : MonoBehaviour, IPreparingListener, IGoalKeeperReadyListene
     private void KickBall()
     {
         image.sprite = kickSprite;
-        ball.Kick(kickForce);
+        ball.Kick(kickForce, ballRotationSpeed);
         Kick?.Invoke();
     }
 
