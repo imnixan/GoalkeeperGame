@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/GameMenu.unity
+    guid: 28d1b651411f527469ba361e71a93d62
+  - enabled: 1
+    path: Assets/Scenes/SettingsMenu.unity
+    guid: 85e48751c4974354fb8f24e2ad320d92
+  - enabled: 1
+    path: Assets/Scenes/CatchBall.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}
