@@ -14,7 +14,7 @@ public class CatchCounter
     private EndGameWindow endGameWindow;
     private const int Speed = 10;
     private const int ShowPosX = 0;
-    private const int HidePosX = -350;
+    private const int HidePosX = -550;
     private float savedPos;
     private int catchCount;
     private TextMeshProUGUI catchesCounter;
@@ -24,7 +24,7 @@ public class CatchCounter
     {
         catchesCounter = GetComponentInChildren<TextMeshProUGUI>();
         rt = GetComponent<RectTransform>();
-        rt.anchoredPosition = new Vector2(HidePosX, 0);
+        rt.anchoredPosition = new Vector2(HidePosX, -100);
     }
 
     public void OnCatchHappen()
@@ -51,7 +51,7 @@ public class CatchCounter
         {
             rt.anchoredPosition = Vector2.MoveTowards(
                 rt.anchoredPosition,
-                new Vector2(newPosX, 0),
+                new Vector2(newPosX, -100),
                 Speed
             );
             yield return new WaitForFixedUpdate();
