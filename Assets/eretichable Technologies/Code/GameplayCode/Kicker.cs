@@ -4,6 +4,7 @@ using UnityEngine;
 using Dreamteck.Splines;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using DG.Tweening;
 
 public class Kicker : MonoBehaviour, IPreparingListener, IGoalKeeperReadyListener
 {
@@ -23,6 +24,9 @@ public class Kicker : MonoBehaviour, IPreparingListener, IGoalKeeperReadyListene
         kickRightLeg,
         idle;
 
+    [SerializeField]
+    private RectTransform catchText;
+
     private Sprite kickSprite;
     private float kickForce = 10f;
     private float kickRotation = 0;
@@ -30,12 +34,28 @@ public class Kicker : MonoBehaviour, IPreparingListener, IGoalKeeperReadyListene
     private Image image;
     private float ballRotationSpeed;
 
+    private Sequence catchShow;
+
     private void Init()
     {
         image = GetComponent<Image>();
         screenHalfWidth = Camera.main.ViewportToWorldPoint(new Vector2(1, 1)).x;
         sc.Init();
         ball.Init();
+
+        catchShow = DOTween
+            .Sequence()
+            .AppendCallback(() =>
+            {
+                catchText.anchoredPosition = new Vector2(-1000, 0);
+                catchText.eulerAngles = new Vector3(0, 0, 300);
+            })
+            .Append(catchText.DOAnchorPosX(0, 0.3f))
+            .Join(catchText.DORotateQuaternion(new Quaternion(), 0.3f))
+            .AppendInterval(0.3f)
+            .Append(catchText.DOAnchorPosX(1000, 0.3f))
+            .Join(catchText.DORotateQuaternion(new Quaternion(), 0.3f))
+            .AppendCallback(KickBall);
     }
 
     private Vector2 GetSideToKick()
@@ -99,6 +119,6 @@ public class Kicker : MonoBehaviour, IPreparingListener, IGoalKeeperReadyListene
 
     public void OnGoalKeeperReady()
     {
-        KickBall();
+        catchShow.Restart();
     }
 }

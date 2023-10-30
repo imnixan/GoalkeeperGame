@@ -27,7 +27,7 @@ public class StepsListener : MonoBehaviour
     public void ClickNext()
     {
         nextButton.SetActive(false);
-        tip.DOAnchorPosX(1, 0.2f).Play();
+        tip.DOAnchorPosX(0, 0.2f).Play();
         gameStepsMachine.CurrentStep = GameStepsMachine.GameSteps.Preparing;
         foreach (var listener in prepareListeners)
         {
@@ -100,7 +100,7 @@ public class StepsListener : MonoBehaviour
     {
         if (gameStepsMachine.CurrentStep == GameStepsMachine.GameSteps.Preparing)
         {
-            tip.DOAnchorPosX(600, 0.2f).Play();
+            tip.DOAnchorPosX(1000, 0.2f).Play();
             foreach (var listener in goalKeeperReadyListeners)
             {
                 listener.OnGoalKeeperReady();

@@ -44,8 +44,8 @@ public class Ball : MonoBehaviour, IPauseListener, ICatchListener
 
     public void OnCatchHappen()
     {
-        gameObject.SetActive(false);
         trail.enabled = false;
+        gameObject.SetActive(false);
     }
 
     public void OnTriggerEnter2D(Collider2D other)
