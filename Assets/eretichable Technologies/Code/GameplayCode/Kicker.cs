@@ -25,11 +25,20 @@ public class Kicker : MonoBehaviour, IPreparingListener, IGoalKeeperReadyListene
         idle;
 
     [SerializeField]
+    private GameObject helmet;
+
+    [SerializeField]
     private RectTransform catchText;
 
+    [SerializeField]
+    private Sprite catchSprite,
+        dodgeSprite;
+
+    private Image catchImage;
+
     private Sprite kickSprite;
-    private float kickForce = 10f;
-    private float kickRotation = 0;
+    private float kickForce = 13f;
+    private float kickRotation = 3;
     private float screenHalfWidth;
     private Image image;
     private float ballRotationSpeed;
@@ -42,6 +51,7 @@ public class Kicker : MonoBehaviour, IPreparingListener, IGoalKeeperReadyListene
         screenHalfWidth = Camera.main.ViewportToWorldPoint(new Vector2(1, 1)).x;
         sc.Init();
         ball.Init();
+        catchImage = catchText.GetComponent<Image>();
 
         catchShow = DOTween
             .Sequence()
@@ -49,6 +59,16 @@ public class Kicker : MonoBehaviour, IPreparingListener, IGoalKeeperReadyListene
             {
                 catchText.anchoredPosition = new Vector2(-1000, 0);
                 catchText.eulerAngles = new Vector3(0, 0, 300);
+                if (ball.bombTime)
+                {
+                    catchImage.sprite = dodgeSprite;
+                    helmet.SetActive(true);
+                }
+                else
+                {
+                    catchImage.sprite = catchSprite;
+                    helmet.SetActive(false);
+                }
             })
             .Append(catchText.DOAnchorPosX(0, 0.3f))
             .Join(catchText.DORotateQuaternion(new Quaternion(), 0.3f))
@@ -107,7 +127,9 @@ public class Kicker : MonoBehaviour, IPreparingListener, IGoalKeeperReadyListene
     private void KickBall()
     {
         image.sprite = kickSprite;
+
         ball.Kick(kickForce, ballRotationSpeed);
+
         Instantiate(kickEffect, GetEffectPos(), new Quaternion());
         Kick?.Invoke();
     }

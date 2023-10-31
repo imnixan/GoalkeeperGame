@@ -2,6 +2,7 @@
 using UnityEngine;
 using Dreamteck.Splines;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class Ball : MonoBehaviour, IPauseListener, ICatchListener
 {
@@ -11,7 +12,18 @@ public class Ball : MonoBehaviour, IPauseListener, ICatchListener
     private BallSprite ballSprite;
     private float savedRotation;
     private bool savedFollow;
-    private TrailRenderer trail;
+    public bool bombTime;
+
+    [SerializeField]
+    private Image image;
+
+    [SerializeField]
+    private ParticleSystem fire,
+        greenFire;
+
+    [SerializeField]
+    private Sprite ball,
+        bomb;
 
     public void Init()
     {
@@ -19,8 +31,8 @@ public class Ball : MonoBehaviour, IPauseListener, ICatchListener
         sf.follow = false;
         rb = GetComponent<Rigidbody2D>();
         ballSprite = GetComponentInChildren<BallSprite>();
-        trail = GetComponent<TrailRenderer>();
-        trail.enabled = false;
+        fire.Stop();
+        greenFire.Stop();
     }
 
     public void SetKickPosition(Vector2 pos)
@@ -30,6 +42,27 @@ public class Ball : MonoBehaviour, IPauseListener, ICatchListener
         rb.angularVelocity = 0;
         ballSprite.Rotation = 0;
         transform.position = pos;
+        bombTime = Random.value > 0.6f;
+        if (bombTime)
+        {
+            PrepareBomb();
+        }
+        else
+        {
+            PrepareBall();
+        }
+    }
+
+    private void PrepareBomb()
+    {
+        tag = "Bomb";
+        image.sprite = bomb;
+    }
+
+    private void PrepareBall()
+    {
+        tag = "Ball";
+        image.sprite = ball;
     }
 
     public void Kick(float force, float rotation)
@@ -39,12 +72,20 @@ public class Ball : MonoBehaviour, IPauseListener, ICatchListener
         sf.follow = true;
         sf.Restart();
         rb.angularVelocity = 10;
-        trail.enabled = true;
+        if (bombTime)
+        {
+            fire.Play();
+        }
+        else
+        {
+            greenFire.Play();
+        }
     }
 
     public void OnCatchHappen()
     {
-        trail.enabled = false;
+        greenFire.Stop();
+        fire.Stop();
         gameObject.SetActive(false);
     }
 
@@ -52,16 +93,34 @@ public class Ball : MonoBehaviour, IPauseListener, ICatchListener
     {
         if (other.CompareTag("Finish"))
         {
-            GoalHappend?.Invoke();
+            if (tag == "Ball")
+            {
+                Goal();
+            }
+            else if (tag == "Bomb")
+            {
+                FindAnyObjectByType<GoalKeeper>().Catch();
+            }
             ballSprite.Rotation = 0;
-            trail.enabled = false;
+            fire.Stop();
+            greenFire.Stop();
         }
+    }
+
+    public void Goal()
+    {
+        GoalHappend?.Invoke();
+        ballSprite.Rotation = 0;
+        fire.Stop();
+        greenFire.Stop();
+        gameObject.SetActive(false);
     }
 
     private void StopFollow()
     {
         sf.follow = false;
-        trail.enabled = false;
+        fire.Stop();
+        greenFire.Stop();
     }
 
     public void OnPause()

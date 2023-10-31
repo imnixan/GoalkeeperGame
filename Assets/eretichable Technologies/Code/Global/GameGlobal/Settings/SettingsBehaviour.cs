@@ -70,4 +70,9 @@ public class SettingsBehaviour : MonoBehaviour
             BackMenu();
         }
     }
+
+    public void Customise()
+    {
+        SceneManager.LoadScene("Customise");
+    }
 }

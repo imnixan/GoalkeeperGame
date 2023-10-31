@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Dreamteck.Splines;
+using System.Runtime.CompilerServices;
 
 public class SplineCreator : MonoBehaviour
 {
@@ -17,9 +18,11 @@ public class SplineCreator : MonoBehaviour
     private const int KickPoint = 0;
     private const int RotationPoint = 1;
     private const int GoalPoint = 2;
+    private Vector3 screenSize;
 
     public void Init()
     {
+        screenSize = Camera.main.ViewportToWorldPoint(new Vector3(1, 1));
         parent.GetWorldCorners(screenCorners);
         spline = GetComponent<SplineComputer>();
         zCoord = spline.GetPointPosition(0).z;
@@ -61,6 +64,14 @@ public class SplineCreator : MonoBehaviour
     {
         float rotPointX = (startPoint + endPoint) / 2;
         rotPointX += Random.Range(-rotateMax, rotateMax);
+        if (rotPointX < -screenSize.x)
+        {
+            rotPointX = -screenSize.x;
+        }
+        if (rotPointX > screenSize.x)
+        {
+            rotPointX = screenSize.x;
+        }
         return rotPointX;
     }
 

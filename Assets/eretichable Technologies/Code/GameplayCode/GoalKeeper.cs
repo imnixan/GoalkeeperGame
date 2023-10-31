@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class GoalKeeper : MonoBehaviour, IPreparingListener, IPauseListener
 {
@@ -16,6 +17,12 @@ public class GoalKeeper : MonoBehaviour, IPreparingListener, IPauseListener
     private Camera camera;
     private Vector3[] fieldCorners;
     private GameObject ballInHand;
+
+    [SerializeField]
+    private GameObject explosion;
+
+    [SerializeField]
+    private AudioClip boom;
 
     private void Init()
     {
@@ -57,6 +64,23 @@ public class GoalKeeper : MonoBehaviour, IPreparingListener, IPauseListener
             CatchBall?.Invoke();
             ballInHand.SetActive(true);
         }
+        else if (other.gameObject.CompareTag("Bomb"))
+        {
+            Instantiate(explosion, transform.position, new Quaternion()).transform.localScale =
+                new Vector3(100, 100, 100);
+            FindAnyObjectByType<Ball>().Goal();
+            if (PlayerPrefs.GetInt("SoundStatus", 1) == 1)
+            {
+                FindAnyObjectByType<SoundPlayer>().Shut();
+                AudioSource.PlayClipAtPoint(boom, Vector3.zero, 3);
+            }
+            gameObject.SetActive(false);
+        }
+    }
+
+    public void Catch()
+    {
+        CatchBall?.Invoke();
     }
 
     private void OnMouseDown()

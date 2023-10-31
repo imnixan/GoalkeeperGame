@@ -60,4 +60,9 @@ public class SoundPlayer
         PlaySound(overSound);
         Vibrate();
     }
+
+    public void Shut()
+    {
+        audio.volume = 0;
+    }
 }
